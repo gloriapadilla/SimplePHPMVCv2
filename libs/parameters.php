@@ -13,7 +13,7 @@
  * @link http://url.com
  */
 $server = "127.0.0.1";
-$user = "konekochan";
+$user ="koneko1";
 $pswd = "sup3rGat0";
 $database = "nw202003";
 $port = "3306";
