@@ -1,14 +1,17 @@
 <?php
-require_once 'models/mnt/categorias.model.php'
+require_once 'models/mnt/categorias.model.php';
 function run(){
     $viewData=array();
     $viewData["mode"]="";
     $viewData["modedsc"]="";
     $viewData["catecod"]=0;
     $viewData["catenom"]="";
-    $viewData["cateest"]="";
+    $viewData["cateest"]="ACT";
+    $viewData["cateest_ACT"]="selected";
+    $viewData["cateest_INA"]="";
+    $viewData["readonly"]="";
     $modedsc=array(
-        "INS"=>"Nuevo Categoria",
+        "INS"=>"Nueva Categoria",
         "UPD"=>"Actualizar",
         "VS"=> "View"
     );
@@ -20,8 +23,13 @@ function run(){
             die();
         }
     }
+
     if(isset($_POST["btnsubmit"])){
         mergeFullArrayTo($_POST,$viewData);
+        if(!(isset($_SESSION["cln_csstoken"])&&$_SESSION["cln_csstoken"]==$viewData["xsstoken"])){
+            redirectWithMessage("No se puede realizar esta operacion.", "index.php?page=categorias");
+            die();
+        }
         switch($viewData["mode"]){
             case "INS":
                 $result=addNewCategoria(
@@ -33,17 +41,35 @@ function run(){
                     die();
                 }
             break;
+            case "UPD":
+                $result=updateCategoria(
+                   
+                    $viewData["catenom"],
+                    $viewData["cateest"],
+                    $viewData["catecod"]
+                );
+                if($result>0){
+                    redirectWithMessage("Guardado Exitosamente","index.php?page=categorias");
+                    die();
+                }
+            break;
         }
     }
     if($viewData["mode"]==="INS"){
         $viewData["modedsc"]=$modedsc[$viewData["mode"]];
-
     }else{
-        $clientDBData=getCategoriaById($viewData["catecod"]);
-        mergeFullArrayTo($clientDBData,$viewData);
-        $viewData["modedsc"]=sprintf($modedsc[$viewData["mode"]])
+        $catDBData=getAllCategoriaById($viewData["catecod"]);
+        mergeFullArrayTo($catDBData,$viewData);
+        $viewData["cateest_ACT"]=($viewData["cateest"]=="ACT")?"selected":"";
+        $viewData["cateest_INA"]=($viewData["cateest"]=="INA")?"selected":"";
+        $viewData["modedsc"]=sprintf($modedsc[$viewData["mode"]], $viewData["catenom"]);
+        if($viewData["mode"]!='UPD'){
+            $viewData["readonly"]="readonly";
+        }
     }
-    renderizar("mnt/cliente",$viewData);
+    $viewData["xsstoken"]=uniqid("cln",true);
+    $_SESSION["cln_csstoken"]=$viewData["xsstoken"];
+    renderizar("mnt/categoria",$viewData);
 }
 run();
 
