@@ -14,24 +14,18 @@
  * @link http://url.com
  */
 session_start();
-
 require_once "libs/utilities.php";
-
 $pageRequest = "home";
-
 if (isset($_GET["page"])) {
     $pageRequest = $_GET["page"];
 }
-
 //Incorporando los midlewares son codigos que se deben ejecutar
 //Siempre
 require_once "controllers/mw/verificar.mw.php";
 require_once "controllers/mw/site.mw.php";
-
 // aqui no se toca jajaja la funcion de este index es
 // llamar al controlador adecuado para manejar el
 // index.php?page=modulo
-
     //Este switch se encarga de todo el enrutamiento público
 switch ($pageRequest) {
     //Accesos Publicos
@@ -49,7 +43,6 @@ case "about":
     include_once "controllers/about.control.php";
     die();
 }
-
 //Este switch se encarga de todo el enrutamiento que ocupa login
 $logged = mw_estaLogueado();
 if ($logged) {
@@ -61,7 +54,6 @@ if ($logged) {
     }
     generarMenu($_SESSION["userCode"]);
 }
-
 require_once "controllers/mw/support.mw.php";
 switch ($pageRequest) {
 case "dashboard":
@@ -100,25 +92,43 @@ case "programa":
       mw_redirectToLogin($_SERVER["QUERY_STRING"]);
     die();
 case "clientes":
-    ($logged)?
-        include_once "controllers/mnt/clientes.control.php":
-        mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+    ($logged) ?
+      include_once "controllers/mnt/clientes.control.php" :
+      mw_redirectToLogin($_SERVER["QUERY_STRING"]);
     die();
 case "cliente":
-    ($logged)?
-        include_once "controllers/mnt/cliente.control.php":
-        mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+    ($logged) ?
+      include_once "controllers/mnt/cliente.control.php" :
+      mw_redirectToLogin($_SERVER["QUERY_STRING"]);
     die();
 case "categorias":
-    ($logged)?
-        include_once "controllers/mnt/categorias.control.php":
-        mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+    ($logged) ?
+      include_once "controllers/mnt/categorias.control.php" :
+      mw_redirectToLogin($_SERVER["QUERY_STRING"]);
     die();
 case "categoria":
-    ($logged)?
-        include_once "controllers/mnt/categoria.control.php":
-        mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+    ($logged) ?
+      include_once "controllers/mnt/categoria.control.php" :
+      mw_redirectToLogin($_SERVER["QUERY_STRING"]);
     die();
+case "mantenimientos":
+    ($logged) ?
+      include_once "controllers/mantenimientos.control.php" :
+      mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+    die();
+
+case "comunicaciones":
+      ($logged) ?
+        include_once "controllers/mnt/comunicaciones.control.php" :
+        mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+      die();
+
+case "comunicacion":
+        ($logged) ?
+          include_once "controllers/mnt/comunicacion.control.php" :
+          mw_redirectToLogin($_SERVER["QUERY_STRING"]);
+        die();
+
 }
 
 addToContext("pageRequest", $pageRequest);
